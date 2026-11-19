@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dashboard</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Dashboard">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1D1B19">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-512.png">
+<link rel="manifest" href="manifest.json">
+<style>
+  html, body { margin: 0; height: 100%; background: #1D1B19; color: #EFEAE3; font: 15px/1.45 system-ui, -apple-system, sans-serif; }
+  body { box-sizing: border-box; padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px); display: flex; flex-direction: column; }
+  iframe { flex: 1; width: 100%; border: 0; display: block; background: #1D1B19; }
+  .ask { margin: auto; padding: 24px; max-width: 360px; display: flex; flex-direction: column; gap: 12px; }
+  .ask input { font: inherit; padding: 12px; border-radius: 12px; border: 1px solid #4C4843; background: #252320; color: inherit; }
+  .ask button { font: inherit; font-weight: 600; padding: 12px; border-radius: 12px; border: 0; background: #5CFF8A; color: #0B0A09; }
+</style>
+</head>
+<body>
+<script>
+  // Your web app link from Apps Script (Deploy → Manage deployments → Web app URL, ending in /exec).
+  // It's fine for this to be public: without your secret key, it shows a blank page.
+  const EXEC_URL = 'PASTE_YOUR_EXEC_URL_HERE';
+
+  const fromLink = new URLSearchParams(location.search).get('k');
+  let key = fromLink;
+  try {
+    if (fromLink) localStorage.setItem('dashKey', fromLink);
+    else key = localStorage.getItem('dashKey');
+  } catch (e) {}
+
+  if (key) {
+    const frame = document.createElement('iframe');
+    frame.title = 'Dashboard';
+    frame.src = EXEC_URL + '?key=' + encodeURIComponent(key);
+    document.body.appendChild(frame);
+  } else {
+    document.body.innerHTML += '<form class="ask" onsubmit="event.preventDefault(); location.search = \'?k=\' + encodeURIComponent(this.k.value.trim());">' +
+      '<label for="k">Enter your dashboard key</label>' +
+      '<input id="k" name="k" autocomplete="off" autocapitalize="off" spellcheck="false">' +
+      '<button>Open</button></form>';
+  }
+</script>
+</body>
+</html>
